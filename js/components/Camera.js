@@ -1,4 +1,4 @@
-import { Vector3, Vector2 } from './Vector.js';
+import { Vector3 } from './Vector.js';
 import { Plane } from './Plane.js';
 import { Line } from '../components/Line.js';
 import { Input } from './Input.js';
@@ -151,26 +151,7 @@ export class Camera
         const param = observerRay.findParameter(this.screenPlane.coefficients);
         return observerRay.generatePoint(param);
     }
-/*
- let point = new Vector3(
-    Math.sin(t),
-    Math.cos(t),
-    Math.sin(t) * Math.cos(t)
-);
-let projectedPoint = _Camera.getProjectedPoint(point);
-let x = _Camera.borders.left.distance(projectedPoint);
-let y = _Camera.borders.bottom.distance(projectedPoint);
-if(_Camera.isPointVisible(point, projectedPoint))
-{
-    const camDist = _Camera.observer.distance(point);
-    Scene.arc(
-        x * Scene.width / 1,
-        Scene.height - y * Scene.height / (1 * _Camera.aspectRatio),
-        (Screen.width / 100) * (Screen.height / 100) / (camDist || 1),
-        "#646432"
-    );
-}
-*/
+    
     createPoint(point)
     {
         const projection = this.getProjectedPoint(point);

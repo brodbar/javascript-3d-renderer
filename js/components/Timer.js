@@ -1,20 +1,37 @@
 export class Timer {
     constructor(deltaTime = 1/60) {
-        let lastTime;
-        let accumulatedTime = 0;
-        this.queued = false;
+        this.lastTime;
+        this.accumulatedTime = 0;
+        this.tick = 0;
 
         this.update = (time) => {
-            if(lastTime) {
-                accumulatedTime += (time - lastTime) / 1000;
-                while(accumulatedTime > deltaTime) {
+            if(this.lastTime) {
+                this.accumulatedTime += (time - this.lastTime) / 1000;
+                while(this.accumulatedTime > deltaTime) {
                     this.callback(deltaTime);
-                    accumulatedTime -= deltaTime;
+                    this.accumulatedTime -= deltaTime;
+                    this.tick++;
+                    if(this.tick > 150)
+                    {
+                        this.pause();
+                        return;
+                    }
                 }
             }
-            lastTime = time;
+            this.lastTime = time;
             this.enqueue();
         }
+
+        ["keydown", "mousemove", "mousedown"].forEach(e => {
+            window.addEventListener(e, () => {
+                this.tick = 0;
+                if(this.paused)
+                {
+                    this.paused = false;
+                    this.start();
+                }
+            });
+        });
     }
 
     evoke(callback) {
@@ -23,13 +40,17 @@ export class Timer {
     }
 
     enqueue() {
-        if (this.queued !== false)
-            this.queued = requestAnimationFrame(this.update);
+        requestAnimationFrame(this.update);
+    }
+    
+    pause()
+    {
+        this.lastTime = 0;
+        this.accumulatedTime = 0;
+        this.paused = true;
     }
 
     start() {
-        this.queued = true;
-        this.enqueue();
+        this.enqueue();        
     }
-
 }
